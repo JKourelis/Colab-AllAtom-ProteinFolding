@@ -6,9 +6,14 @@ Google Colab notebooks for batch biomolecular structure prediction. All tools sh
 
 ## Notebooks
 
-### MSA Pre-computation (run this first)
+### MSA Pre-computation (optional)
 
-Run the MSA notebook **before** any folding notebook when working with multiple tools or jobs. It searches MSAs once for all unique protein sequences and produces pre-paired files that every folding tool can reuse — avoiding redundant ColabFold queries and ensuring consistent cross-chain pairing. **No GPU required** (CPU-only).
+Pre-computes MSAs once for all unique protein sequences and produces pre-paired alignments that every folding tool can reuse. **No GPU required** (CPU-only).
+
+**This step is optional.** Without pre-computed MSAs, each folding notebook queries the [ColabFold](https://github.com/sokrypton/ColabFold) MMseqs2 server on-the-fly during prediction (~30–120 s per protein chain). Pre-computing is recommended when:
+- **Running the same sequences through multiple tools** — avoids redundant server queries
+- **Running large batches** — ColabFold rate-limits parallel requests; pre-computing lets you search sequentially, then fold in parallel
+- **Custom cross-species MSA pairing** — e.g., host–pathogen complexes where standard TaxID-based pairing produces no paired rows
 
 | Notebook | Colab Link | GPU | Description |
 |----------|-----------|-----|-------------|
@@ -31,7 +36,13 @@ Run the MSA notebook **before** any folding notebook when working with multiple 
 | T4 (free) | 15 GB | Yes | Yes | Mini only | **No** (needs bf16) | **No** (needs 32GB+) |
 | L4 (paid) | 24 GB | Yes | Yes | Mini/Base (small) | Yes | **No** |
 | A100 (Pro) | 40 GB | Yes | Yes | Yes | Yes | Yes (short seqs) |
-| A100 80GB | 80 GB | Yes | Yes | Yes | Yes | Yes |
+| A100 80 GB | 80 GB | Yes | Yes | Yes | Yes | Yes |
+| H100 | 80 GB | Yes | Yes | Yes | Yes | Yes |
+| G4 (Blackwell)\* | 96 GB | Yes | Yes | Yes | Untested | Untested |
+
+\*G4 = NVIDIA RTX PRO 6000 Blackwell Server Edition (sm\_120). Automatic compatibility patches are applied during install. IntelliFold runs at full speed (native sm\_120 fast\_layernorm). Boltz-2 and Protenix use cuEquivariance CUDA kernels for triangle\_attention (full speed) but fall back to PyTorch native ops for triangle\_multiplicative (~20% overhead on that operation) due to a Triton kernel incompatibility with sm\_120. The 96 GB VRAM more than compensates — enables larger complexes and more parallel jobs than any other Colab GPU.
+
+**Recommended:** A100 80 GB or H100 for general use across all tools. The free T4 handles small monomers with IntelliFold, Boltz-2, or Protenix Mini. For large complexes (>2000 tokens, many chains) or parallel batch runs, A100 80 GB, H100, or G4 provide the VRAM headroom needed.
 
 ## Unified CSV Format
 
@@ -122,6 +133,21 @@ All folding notebooks include built-in [ipSAE_batch](https://github.com/JKoureli
 **Scores**: ipSAE, ipTM, AlphaBridge, contact probability, PAE, PMC, pDockQ, pDockQ2, local interaction scores.
 
 **Visualizations**: PMC/contact-probability matrix plots, AlphaBridge-style circular ribbon diagrams with colored arcs for confident interface contacts, PAE matrices, and interactive HTML comparisons (scatter plots, jitter plots, correlation matrices with threshold filtering).
+
+<table>
+<tr>
+<td width="50%"><b>A) Joint Matrix Plot</b></td>
+<td width="50%"><b>B) Ribbon Diagram</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/JKourelis/ipSAE_batch/raw/main/images/example_model_matrix.png" width="100%"/></td>
+<td><img src="https://github.com/JKourelis/ipSAE_batch/raw/main/images/example_model_ribbon.png" width="100%"/></td>
+</tr>
+<tr>
+<td>Upper triangle: PMC (Predicted Merged Confidence) combining pLDDT and PAE into a single confidence metric. Lower triangle: Contact probability derived from PAE and inter-residue distance. Chain boundaries shown with gaps; ticks indicate residue positions with chain labels (\u25bc) marking N-terminus direction.</td>
+<td>Circular representation of protein chains with interface regions. Colored arcs indicate confident interface contacts; grey arcs show contacts below the PAE threshold. Interface regions and contact lines use matching colors.</td>
+</tr>
+</table>
 
 Enable/disable via the `enable_ipsae` toggle in each notebook's Settings cell.
 
