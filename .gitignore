@@ -1,0 +1,9 @@
+# Dev-only files
+CLAUDE.md
+integrate_msa_support.py
+memory/
+REFERENCE_MEMORY/
+__pycache__/
+.Rhistory
+.claude/
+*.backup
