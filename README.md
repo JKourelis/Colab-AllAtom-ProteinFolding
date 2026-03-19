@@ -13,7 +13,6 @@ Pre-computes MSAs once for all unique protein sequences and produces pre-paired 
 **This step is optional.** Without pre-computed MSAs, each folding notebook queries the [ColabFold](https://github.com/sokrypton/ColabFold) MMseqs2 server on-the-fly during prediction (~30–120 s per protein chain). Pre-computing is recommended when:
 - **Running the same sequences through multiple tools** — avoids redundant server queries
 - **Running large batches** — ColabFold rate-limits parallel requests; pre-computing lets you search sequentially, then fold in parallel
-- **Custom cross-species MSA pairing** — e.g., host–pathogen complexes where standard TaxID-based pairing produces no paired rows
 
 | Notebook | Colab Link | GPU | Description |
 |----------|-----------|-----|-------------|
