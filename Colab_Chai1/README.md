@@ -17,16 +17,18 @@ Batch structure prediction with [Chai-1](https://github.com/chaidiscovery/chai-l
 
 **Chai-1 requires bfloat16 (compute capability >= 8.0). T4 GPUs cannot run this model.**
 
-| Colab GPU | VRAM | Compatible | Notes |
-|-----------|------|------------|-------|
+| GPU | VRAM | Compatible | Notes |
+|-----|------|------------|-------|
 | T4 (free) | 15 GB | **No** | Compute capability 7.5, no bf16 |
 | L4 (paid) | 24 GB | Yes | Small complexes only |
 | A100 (Pro) | 40 GB | Yes | Recommended |
+| H100 | 80 GB | Yes | |
+| Blackwell (G4) | 24–192 GB | Yes | torch 2.7.1+cu128 (auto-installed) |
 
 ## Quick Start
 
 1. Read Cell 0 for overview and CSV format
-2. Run Cell 1: Restart kernel (installs NumPy 1.x + PyTorch 2.6.x)
+2. Run Cell 1: Restart kernel (installs NumPy 1.x + PyTorch 2.7.x)
 3. Run Cell 2: Install Chai-1 and dependencies
 4. Run Cell 3: Initialize CSV processor
 5. Run Cell 4: Upload CSV + connect Google Drive

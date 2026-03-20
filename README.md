@@ -37,9 +37,9 @@ Pre-computes MSAs once for all unique protein sequences and produces pre-paired 
 | A100 (Pro) | 40 GB | Yes | Yes | Yes | Yes | Yes (short seqs) |
 | A100 80 GB | 80 GB | Yes | Yes | Yes | Yes | Yes |
 | H100 | 80 GB | Yes | Yes | Yes | Yes | Yes |
-| G4 (Blackwell)\* | 96 GB | Yes | Yes | Yes | Untested | Yes |
+| G4 (Blackwell)\* | 96 GB | Yes | Yes | Yes | Yes | Yes |
 
-\*G4 = NVIDIA RTX PRO 6000 Blackwell Server Edition (sm\_120). Automatic compatibility patches are applied during install. IntelliFold runs at full speed (native sm\_120 fast\_layernorm). Boltz-2 and Protenix use cuEquivariance CUDA kernels for triangle\_attention (full speed) but fall back to PyTorch native ops for triangle\_multiplicative (~20% overhead on that operation) due to a Triton kernel incompatibility with sm\_120. The 96 GB VRAM more than compensates — enables larger complexes and more parallel jobs than any other Colab GPU.
+\*G4 = NVIDIA RTX PRO 6000 Blackwell Server Edition (sm\_120). Automatic compatibility patches are applied during install. IntelliFold runs at full speed (native sm\_120 fast\_layernorm). Boltz-2 and Protenix use cuEquivariance CUDA kernels for triangle\_attention (full speed) but fall back to PyTorch native ops for triangle\_multiplicative (~20% overhead on that operation) due to a Triton kernel incompatibility with sm\_120. Chai-1 installs torch 2.7.1+cu128 to support sm\_120 (devs confirmed torch 2.7 compatibility, [GitHub #381](https://github.com/chaidiscovery/chai-lab/issues/381)). The 96 GB VRAM more than compensates — enables larger complexes and more parallel jobs than any other Colab GPU.
 
 **Recommended:** A100 80 GB or H100 for general use across all tools. The free T4 handles small monomers with IntelliFold, Boltz-2, or Protenix Mini. For large complexes (>2000 tokens, many chains) or parallel batch runs, A100 80 GB, H100, or G4 provide the VRAM headroom needed.
 
